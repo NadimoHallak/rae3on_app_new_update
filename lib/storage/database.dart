@@ -6,5 +6,5 @@ import 'package:rae3on_app_new_update/model/teacher_model.dart';
 class DataBase {
   static Box<TeacherModel> getTeachers() => Hive.box('teacher');
   static Box<FamilyModel> getFamiles() => Hive.box('familes');
-  static Box<TeacherModel> getClass() => Hive.box('clases');
+  static Box<ClassModel> getClass() => Hive.box('clases');
 }

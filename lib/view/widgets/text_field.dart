@@ -1,20 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:validated/validated.dart' as validate;
 
 class MyTextField extends StatelessWidget {
-  const MyTextField({
+  MyTextField({
     super.key,
     required this.controller,
     required this.lableText,
+    required this.percentIcon,
+    this.onChanged,
   });
 
   final String lableText;
   final TextEditingController controller;
-
+  void Function(String value)? onChanged;
+  bool percentIcon = false;
+  static final RegExp numberRegExp = RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%\s-]');
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      validator: (value) {
+        // if (value!.trim().isEmpty) {
+        //   return "الحق فارغ";
+        // }
+        // if (validate.isNumeric(value)) {
+        //   return "أدخل أرقاماً فقط";
+        // }
+      },
+      onChanged: onChanged,
       keyboardType: TextInputType.number,
       controller: controller,
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+        FilteringTextInputFormatter.digitsOnly,
+      ],
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(13),
@@ -24,11 +43,7 @@ class MyTextField extends StatelessWidget {
           fontSize: 15,
           color: Colors.black45,
         ),
-        suffixIcon: const Icon(
-          Icons.delete,
-          // size: 25,
-          color: Colors.red,
-        ),
+        prefixText: percentIcon ? "%" : " ",
       ),
     );
   }
