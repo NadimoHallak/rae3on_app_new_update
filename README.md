@@ -1,7 +1,7 @@
 # An introductory overview of the application
 ## An educational academy asked me for a mobile app to perform some of their mathematical calculations
 
-### Concepts used
+### > [!Concepts used]
 * I have used MVVM architecture to organize the application
 * Application information is stored in the mobile memory by `Hive`
 * Filters on text fields using `Regex`
