@@ -1,5 +1,5 @@
-### An introductory overview of the application
-# An educational academy asked me for a mobile app to perform some of their mathematical calculations
+# An introductory overview of the application
+## An educational academy asked me for a mobile app to perform some of their mathematical calculations
 
 ### Concepts used
 * I have used MVVM architecture to organize the application
