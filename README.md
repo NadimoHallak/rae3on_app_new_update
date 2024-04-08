@@ -8,7 +8,7 @@
 * I used the `singleton` concept in several places using the `get_it` package
 * I used `shared_preferences` package as `singleton` to save some stuff in mobile memory
 * The model layer was generated automatically by the `Hive generator`
-* There is an animation using the `animate_do` and `flutter_slidable` and `curved_navigation_bar` packages
+* There is an animation using the `animate_do` , `flutter_slidable` and `curved_navigation_bar` packages
 
 
 
