@@ -9,5 +9,8 @@
 * I used `shared_preferences` package as `singleton` to save some stuff in mobile memory
 * The model layer was generated automatically by the `Hive generator`
 * There is an animation using the `animate_do` and `flutter_slidable` packages
-> [!NOTE]
-> Useful information that users should know, even when skimming content.
+
+
+
+https://github.com/NadimoHallak/rae3on_app_new_update/assets/126336797/1e8ae518-5fe8-4607-a60d-bdec020049c2
+
