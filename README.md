@@ -9,3 +9,5 @@
 * I used `shared_preferences` package as `singleton` to save some stuff in mobile memory
 * The model layer was generated automatically by the `Hive generator`
 * There is an animation using the `animate_do` and `flutter_slidable` packages
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
