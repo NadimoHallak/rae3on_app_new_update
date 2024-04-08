@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:rae3on_app_new_update/core/di.dart';
 import 'package:rae3on_app_new_update/core/functions.dart';
+import 'package:rae3on_app_new_update/model/teacher_model.dart';
 import 'package:rae3on_app_new_update/storage/database.dart';
 import 'package:rae3on_app_new_update/view/widgets/information_card.dart';
 import 'package:rae3on_app_new_update/view/widgets/main_home_page_card.dart';
@@ -117,9 +118,18 @@ class _HomePageState extends State<HomePage> with CaculateFunctions {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        DataBase.getTeachers().clear();
-                        DataBase.getFamiles().clear();
                         DataBase.getClass().clear();
+                        List<TeacherModel> teachers = DataBase.getTeachers()
+                            .values
+                            .cast<TeacherModel>()
+                            .toList();
+                        for (var teacher in teachers) {
+                          teacher
+                            ..acountInDinar = 0
+                            ..acountInDinarWithDiscount = 0
+                            ..acountInLira = 0
+                            ..acountInLiraWithDiscount = 0;
+                        }
                       });
                     },
                     style: ElevatedButton.styleFrom(

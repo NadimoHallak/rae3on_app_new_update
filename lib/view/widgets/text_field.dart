@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:validated/validated.dart' as validate;
+
 
 class MyTextField extends StatelessWidget {
   MyTextField({
