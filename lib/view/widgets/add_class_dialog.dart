@@ -53,10 +53,6 @@ class _AddClassDialogState extends State<AddClassDialog>
                 key: globalKey,
                 child: TextFormField(
                   controller: controller,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
                   keyboardType: TextInputType.number,
                   textAlignVertical: TextAlignVertical.center,
                   textDirection: TextDirection.ltr,
@@ -67,6 +63,11 @@ class _AddClassDialogState extends State<AddClassDialog>
                   validator: (value) {
                     if (value!.trim().isEmpty) {
                       return "إملأ الحقل";
+                    }
+                    if (value.trim().contains(" ") ||
+                        value.trim().contains("_") ||
+                        value.trim().contains(",")) {
+                      return "يوجد علامات غير مرغوبة";
                     }
                   },
                 ),
