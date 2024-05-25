@@ -66,6 +66,7 @@ class _AddClassDialogState extends State<AddClassDialog>
                     }
                     if (value.trim().contains(" ") ||
                         value.trim().contains("_") ||
+                        value.trim().contains("-") ||
                         value.trim().contains(",")) {
                       return "يوجد علامات غير مرغوبة";
                     }

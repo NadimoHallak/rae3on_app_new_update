@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -47,14 +48,33 @@ class _FamilyPageState extends State<FamilyPage> with CaculateFunctions {
                 final family = FamilyModel()
                   ..name = addFamilyController.text
                   ..acountInDinar = 0;
+                final isExist =
+                    DataBase.getFamiles().values.cast<FamilyModel>().any(
+                          (element) => element.name == family.name,
+                        );
 
-                setState(() {
-                  final box = DataBase.getFamiles();
-                  box.add(family);
-                  addFamilyController.clear();
-                  // teachers.add(TeacherModel(name: addTeacherController.text));
-                });
-                Navigator.pop(context);
+                if (isExist) {
+                  Flushbar(
+                    title: "خطأ",
+                    titleColor: Colors.red,
+                    message: "العائلة موجودة مسبقا",
+                    flushbarPosition: FlushbarPosition.TOP,
+                    icon: const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
+                    textDirection: TextDirection.rtl,
+                    duration: const Duration(seconds: 2),
+                  ).show(context);
+                } else {
+                  setState(() {
+                    final box = DataBase.getFamiles();
+                    box.add(family);
+                    addFamilyController.clear();
+                    // teachers.add(TeacherModel(name: addTeacherController.text));
+                  });
+                  Navigator.pop(context);
+                }
               }
             },
           ),

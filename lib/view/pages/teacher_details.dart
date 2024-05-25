@@ -53,7 +53,7 @@ class _TeacherDetailsState extends State<TeacherDetails>
               ),
               stretch: true,
               stretchTriggerOffset: 300.0,
-              expandedHeight: 300.0,
+              expandedHeight: 310.0,
               flexibleSpace: FlexibleSpaceBar(
                 background: ValueListenableBuilder(
                   valueListenable: DataBase.getTeachers().listenable(),
@@ -231,34 +231,45 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                     final percentAsString = config
                                         .get<SharedPreferences>()
                                         .getString("percent");
+
                                     final dinarPriceAsString = config
                                         .get<SharedPreferences>()
                                         .getString("dinarPrice");
+
                                     if (percentAsString != null ||
                                         dinarPriceAsString != null) {
+
                                       final teacher = widget.teacher;
+
                                       num percent = num.parse(config
                                           .get<SharedPreferences>()
                                           .getString("percent")!);
+
                                       num dinarPrice = num.parse(config
                                           .get<SharedPreferences>()
                                           .getString("dinarPrice")!);
 
                                       teacher.acountInDinar -=
                                           teachersClases[index].classPrice;
+
                                       teacher.acountInDinarWithDiscount =
                                           clacCoinWithDiscount(
                                         coin: teacher.acountInDinar,
                                         percent: percent,
                                       );
+
                                       teacher.acountInLira = clacAcountInLira(
-                                          accountInDinar: teacher.acountInDinar,
-                                          dinarPrice: dinarPrice);
+                                        accountInDinar: teacher.acountInDinar,
+                                        dinarPrice: dinarPrice,
+                                      );
+                                      
                                       teacher.acountInLiraWithDiscount =
                                           clacCoinWithDiscount(
-                                              coin: teacher.acountInLira,
-                                              percent: percent);
+                                        coin: teacher.acountInLira,
+                                        percent: percent,
+                                      );
                                       widget.teacher.save();
+                                      
                                     } else {
                                       Flushbar(
                                         title: "خطأ",
