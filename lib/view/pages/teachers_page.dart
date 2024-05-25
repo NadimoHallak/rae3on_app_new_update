@@ -7,6 +7,7 @@ import 'package:rae3on_app_new_update/storage/database.dart';
 import 'package:rae3on_app_new_update/view/pages/teacher_details.dart';
 import 'package:rae3on_app_new_update/view/widgets/my_alert_dialog.dart';
 import 'package:rae3on_app_new_update/view/widgets/teacher_tile.dart';
+import 'package:uuid/uuid.dart';
 
 class TeacherPage extends StatefulWidget {
   const TeacherPage({super.key});
@@ -35,6 +36,7 @@ class _TeacherPageState extends State<TeacherPage> {
             onDone: () {
               if (_key.currentState!.validate()) {
                 final teacher = TeacherModel()
+                  ..id = const Uuid().v4()
                   ..name = addTeacherController.text
                   ..acountInDinar = 0
                   ..acountInDinarWithDiscount = 0

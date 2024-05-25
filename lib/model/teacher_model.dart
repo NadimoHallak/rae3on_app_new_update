@@ -7,19 +7,16 @@ part 'teacher_model.g.dart';
 
 @HiveType(typeId: 0)
 class TeacherModel extends HiveObject {
-
   @HiveField(0)
-  late String name;
+  late String id;
   @HiveField(1)
-  late num acountInDinar;
+  late String name;
   @HiveField(2)
-  late num acountInDinarWithDiscount;
+  late num acountInDinar;
   @HiveField(3)
-  late num acountInLira;
+  late num acountInDinarWithDiscount;
   @HiveField(4)
+  late num acountInLira;
+  @HiveField(5)
   late num acountInLiraWithDiscount;
-  
-  
-
-  
 }

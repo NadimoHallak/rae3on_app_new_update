@@ -17,17 +17,20 @@ class FamilyModelAdapter extends TypeAdapter<FamilyModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return FamilyModel()
-      ..name = fields[0] as String
-      ..acountInDinar = fields[1] as num;
+      ..id = fields[0] as String
+      ..name = fields[1] as String
+      ..acountInDinar = fields[2] as num;
   }
 
   @override
   void write(BinaryWriter writer, FamilyModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(1)
+      ..write(obj.name)
+      ..writeByte(2)
       ..write(obj.acountInDinar);
   }
 

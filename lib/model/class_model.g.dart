@@ -17,20 +17,23 @@ class ClassModelAdapter extends TypeAdapter<ClassModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ClassModel()
-      ..classPrice = fields[0] as num
-      ..familyName = fields[1] as String
-      ..teacherName = fields[2] as String;
+      ..id = fields[0] as String
+      ..classPrice = fields[1] as num
+      ..familyName = fields[2] as String
+      ..teacherName = fields[3] as String;
   }
 
   @override
   void write(BinaryWriter writer, ClassModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.classPrice)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.familyName)
+      ..write(obj.classPrice)
       ..writeByte(2)
+      ..write(obj.familyName)
+      ..writeByte(3)
       ..write(obj.teacherName);
   }
 

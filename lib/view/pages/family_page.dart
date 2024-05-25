@@ -11,6 +11,7 @@ import 'package:rae3on_app_new_update/view/pages/family_page_details.dart';
 import 'package:rae3on_app_new_update/view/widgets/family_tile.dart';
 import 'package:rae3on_app_new_update/view/widgets/my_alert_dialog.dart';
 import 'package:rae3on_app_new_update/view/widgets/teacher_tile.dart';
+import 'package:uuid/uuid.dart';
 
 class FamilyPage extends StatefulWidget {
   const FamilyPage({super.key});
@@ -46,6 +47,7 @@ class _FamilyPageState extends State<FamilyPage> with CaculateFunctions {
             onDone: () {
               if (_key.currentState!.validate()) {
                 final family = FamilyModel()
+                  ..id = const Uuid().v4()
                   ..name = addFamilyController.text
                   ..acountInDinar = 0;
                 final isExist =

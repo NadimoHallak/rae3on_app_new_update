@@ -30,7 +30,8 @@ class _TeacherDetailsState extends State<TeacherDetails>
 
   Color? lableColor = Colors.white;
   Color? valueColor = Colors.white;
-  final familes = DataBase.getFamiles().values.toList().cast<FamilyModel>();
+  final familes =
+      DataBase.getFamiles().values.toList().cast<FamilyModel>().toList();
   List<String> familesName = [];
   String selectedFamily = "";
 
@@ -58,16 +59,20 @@ class _TeacherDetailsState extends State<TeacherDetails>
                 background: ValueListenableBuilder(
                   valueListenable: DataBase.getTeachers().listenable(),
                   builder: (BuildContext context, box, _) {
-                    TeacherModel teacher =
-                        box.values.cast<TeacherModel>().firstWhere(
-                              (element) => element.name == widget.teacher.name,
-                              orElse: () => TeacherModel()
-                                ..name = widget.teacher.name
-                                ..acountInDinar = 0
-                                ..acountInDinarWithDiscount = 0
-                                ..acountInLira = 0
-                                ..acountInLiraWithDiscount = 0,
-                            );
+                    // TeacherModel teacher =
+                    //     box.values.cast<TeacherModel>().firstWhere(
+                    //           (element) => element.name == widget.teacher.name,
+                    //           orElse: () => TeacherModel()
+                    //             ..name = widget.teacher.name
+                    //             ..acountInDinar = 0
+                    //             ..acountInDinarWithDiscount = 0
+                    //             ..acountInLira = 0
+                    //             ..acountInLiraWithDiscount = 0,
+                    //         );
+                    TeacherModel? teacher = box.get(widget.id);
+                    if (teacher == null) {
+                      return const Center(child: Text('مدرس غير موجود'));
+                    }
                     return Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 10),
@@ -154,8 +159,8 @@ class _TeacherDetailsState extends State<TeacherDetails>
 
                                       return AddClassDialog(
                                         teacher: widget.teacher,
-                                        familesName: familesName,
-                                        selectedFamily: selectedFamily,
+                                        familesName: familes,
+                                        // selectedFamily: selectedFamily,
                                       );
                                     },
                                   );
@@ -171,7 +176,6 @@ class _TeacherDetailsState extends State<TeacherDetails>
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(context);
-                                  final teacherBox = DataBase.getTeachers();
                                   final clasesBox = DataBase.getClass();
                                   List<ClassModel> allClases = clasesBox.values
                                       .toList()
@@ -184,8 +188,8 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                       clasesBox.deleteAt(i);
                                     }
                                   }
-
-                                  teacherBox.deleteAt(widget.id);
+                                  box.delete(teacher.id);
+                                  // teacherBox.deleteAt(widget.id);
                                 },
                                 child: const Text(
                                   "حذف المدرس",
@@ -208,7 +212,7 @@ class _TeacherDetailsState extends State<TeacherDetails>
                 builder: (context, box, _) {
                   List<ClassModel> allClases =
                       box.values.toList().cast<ClassModel>();
-                  dynamic teachersClases = allClases
+                  List<ClassModel> teachersClases = allClases
                       .where((element) =>
                           element.teacherName == widget.teacher.name)
                       .toList();
@@ -238,7 +242,6 @@ class _TeacherDetailsState extends State<TeacherDetails>
 
                                     if (percentAsString != null ||
                                         dinarPriceAsString != null) {
-
                                       final teacher = widget.teacher;
 
                                       num percent = num.parse(config
@@ -262,14 +265,13 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                         accountInDinar: teacher.acountInDinar,
                                         dinarPrice: dinarPrice,
                                       );
-                                      
+
                                       teacher.acountInLiraWithDiscount =
                                           clacCoinWithDiscount(
                                         coin: teacher.acountInLira,
                                         percent: percent,
                                       );
                                       widget.teacher.save();
-                                      
                                     } else {
                                       Flushbar(
                                         title: "خطأ",
@@ -285,7 +287,7 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                         duration: const Duration(seconds: 2),
                                       ).show(context);
                                     }
-                                    box.deleteAt(index);
+                                    box.delete(teachersClases[index].id);
                                   },
                                   icon: Icons.delete,
                                   backgroundColor: Colors.red,
@@ -305,8 +307,9 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                         color: Colors.black26)
                                   ]),
                               child: ClassTile(
-                                clases: teachersClases,
-                                index: index,
+                                class_: teachersClases[index],
+                                // clases: teachersClases,
+                                // index: index,
                               ),
                             ),
                           ),

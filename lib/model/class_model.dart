@@ -7,12 +7,13 @@ part 'class_model.g.dart';
 
 @HiveType(typeId: 2)
 class ClassModel extends HiveObject{
-  
   @HiveField(0)
-  late num classPrice;
+  late String id;
   @HiveField(1)
-  late String familyName;
+  late num classPrice;
   @HiveField(2)
+  late String familyName;
+  @HiveField(3)
   late String teacherName;
  
   

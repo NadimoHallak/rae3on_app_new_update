@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:rae3on_app_new_update/model/class_model.dart';
 
 class ClassTile extends StatelessWidget {
-  const ClassTile({
+  ClassTile({
     super.key,
-    required this.clases,
-    required this.index,
+    required this.class_,
+    // required this.clases,
+    // required this.index,
   });
 
-  final clases;
-  final int index;
+  // final clases;
+  // final int index;
 
+  final ClassModel class_;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,7 +31,7 @@ class ClassTile extends StatelessWidget {
               ),
             ),
             Text(
-              " ${clases[index].familyName}",
+              " ${class_.familyName}",
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.end,
               style: const TextStyle(
@@ -53,7 +55,7 @@ class ClassTile extends StatelessWidget {
               ),
             ),
             Text(
-              " ${clases[index].classPrice}",
+              " ${class_.classPrice}",
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.end,
               style: const TextStyle(

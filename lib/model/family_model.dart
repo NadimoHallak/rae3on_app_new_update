@@ -5,7 +5,11 @@ part 'family_model.g.dart';
 @HiveType(typeId: 1)
 class FamilyModel extends HiveObject {
   @HiveField(0)
-  late String name;
+   String id = "";
   @HiveField(1)
+  late String name;
+  @HiveField(2)
   late num acountInDinar;
+
+  
 }

@@ -17,26 +17,29 @@ class TeacherModelAdapter extends TypeAdapter<TeacherModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return TeacherModel()
-      ..name = fields[0] as String
-      ..acountInDinar = fields[1] as num
-      ..acountInDinarWithDiscount = fields[2] as num
-      ..acountInLira = fields[3] as num
-      ..acountInLiraWithDiscount = fields[4] as num;
+      ..id = fields[0] as String
+      ..name = fields[1] as String
+      ..acountInDinar = fields[2] as num
+      ..acountInDinarWithDiscount = fields[3] as num
+      ..acountInLira = fields[4] as num
+      ..acountInLiraWithDiscount = fields[5] as num;
   }
 
   @override
   void write(BinaryWriter writer, TeacherModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.acountInDinar)
+      ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.acountInDinarWithDiscount)
+      ..write(obj.acountInDinar)
       ..writeByte(3)
-      ..write(obj.acountInLira)
+      ..write(obj.acountInDinarWithDiscount)
       ..writeByte(4)
+      ..write(obj.acountInLira)
+      ..writeByte(5)
       ..write(obj.acountInLiraWithDiscount);
   }
 
