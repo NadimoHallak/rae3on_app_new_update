@@ -32,16 +32,10 @@ class _TeacherDetailsState extends State<TeacherDetails>
   Color? valueColor = Colors.white;
   final familes =
       DataBase.getFamiles().values.toList().cast<FamilyModel>().toList();
-  List<String> familesName = [];
-  String selectedFamily = "";
+  String selectedFamily = "اختر العائلة";
 
   @override
   Widget build(BuildContext context) {
-    familesName = List.generate(
-      familes.length,
-      (index) => familes[index].name,
-    );
-    // print(familesName);
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -59,20 +53,18 @@ class _TeacherDetailsState extends State<TeacherDetails>
                 background: ValueListenableBuilder(
                   valueListenable: DataBase.getTeachers().listenable(),
                   builder: (BuildContext context, box, _) {
-                    // TeacherModel teacher =
-                    //     box.values.cast<TeacherModel>().firstWhere(
-                    //           (element) => element.name == widget.teacher.name,
-                    //           orElse: () => TeacherModel()
-                    //             ..name = widget.teacher.name
-                    //             ..acountInDinar = 0
-                    //             ..acountInDinarWithDiscount = 0
-                    //             ..acountInLira = 0
-                    //             ..acountInLiraWithDiscount = 0,
-                    //         );
-                    TeacherModel? teacher = box.get(widget.id);
-                    if (teacher == null) {
-                      return const Center(child: Text('مدرس غير موجود'));
-                    }
+                    TeacherModel teacher = box.values
+                        .cast<TeacherModel>()
+                        .firstWhere(
+                            (element) => element.id == widget.teacher.id,
+                            orElse: () => TeacherModel()
+                              ..id = widget.teacher.id
+                              ..name = widget.teacher.name
+                              ..acountInDinar = 0
+                              ..acountInDinarWithDiscount = 0
+                              ..acountInLira = 0
+                              ..acountInLiraWithDiscount = 0);
+
                     return Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 10),
@@ -151,12 +143,6 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                   showDialog(
                                     context: context,
                                     builder: (context) {
-                                      //! note
-
-                                      selectedFamily = familesName.isNotEmpty
-                                          ? familesName.first
-                                          : "لا يوجد عائلات";
-
                                       return AddClassDialog(
                                         teacher: widget.teacher,
                                         familesName: familes,
@@ -165,7 +151,7 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                     },
                                   );
 
-                                  setState(() {});
+                                  // setState(() {});
                                 },
                                 child: const Text(
                                   "إضافة حصة",
@@ -183,13 +169,12 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                   for (var i = allClases.length - 1;
                                       i >= 0;
                                       i--) {
-                                    if (allClases[i].teacherName ==
-                                        widget.teacher.name) {
-                                      clasesBox.deleteAt(i);
+                                    if (allClases[i].id == widget.teacher.id) {
+                                      clasesBox.delete(allClases[i].id);
                                     }
                                   }
-                                  box.delete(teacher.id);
-                                  // teacherBox.deleteAt(widget.id);
+                                  // box.delete(teacher.id);
+                                  box.deleteAt(widget.id);
                                 },
                                 child: const Text(
                                   "حذف المدرس",
@@ -211,10 +196,11 @@ class _TeacherDetailsState extends State<TeacherDetails>
                 valueListenable: DataBase.getClass().listenable(),
                 builder: (context, box, _) {
                   List<ClassModel> allClases =
-                      box.values.toList().cast<ClassModel>();
+                      box.values.cast<ClassModel>().toList();
+                  // print(allClases);
                   List<ClassModel> teachersClases = allClases
-                      .where((element) =>
-                          element.teacherName == widget.teacher.name)
+                      .where(
+                          (element) => element.teacherName == widget.teacher.id)
                       .toList();
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(

@@ -44,10 +44,10 @@ class _FamilyPageState extends State<FamilyPage> with CaculateFunctions {
             onCansle: () {
               Navigator.pop(context);
             },
-            onDone: () {
+            onDone: () async {
               if (_key.currentState!.validate()) {
                 final family = FamilyModel()
-                  ..id = const Uuid().v4()
+                  // ..id = const Uuid().v4()
                   ..name = addFamilyController.text
                   ..acountInDinar = 0;
                 final isExist =
@@ -69,12 +69,13 @@ class _FamilyPageState extends State<FamilyPage> with CaculateFunctions {
                     duration: const Duration(seconds: 2),
                   ).show(context);
                 } else {
-                  setState(() {
-                    final box = DataBase.getFamiles();
-                    box.add(family);
-                    addFamilyController.clear();
-                    // teachers.add(TeacherModel(name: addTeacherController.text));
-                  });
+                  final box = DataBase.getFamiles();
+                  int key = await box.add(family);
+                  family.id = key.toString();
+                  family.save();
+                  addFamilyController.clear();
+                  print(family.id);
+                  // teachers.add(TeacherModel(name: addTeacherController.text));
                   Navigator.pop(context);
                 }
               }

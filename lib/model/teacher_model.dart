@@ -8,7 +8,7 @@ part 'teacher_model.g.dart';
 @HiveType(typeId: 0)
 class TeacherModel extends HiveObject {
   @HiveField(0)
-  late String id;
+  late String id = "";
   @HiveField(1)
   late String name;
   @HiveField(2)
