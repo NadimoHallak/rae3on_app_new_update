@@ -169,7 +169,7 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                   for (var i = allClases.length - 1;
                                       i >= 0;
                                       i--) {
-                                    if (allClases[i].teacherName ==
+                                    if (allClases[i].teacherId ==
                                         widget.teacher.id) {
                                       clasesBox
                                           .delete(int.parse(allClases[i].id));
@@ -202,7 +202,7 @@ class _TeacherDetailsState extends State<TeacherDetails>
                   // print(allClases);
                   List<ClassModel> teachersClases = allClases
                       .where(
-                          (element) => element.teacherName == widget.teacher.id)
+                          (element) => element.teacherId == widget.teacher.id)
                       .toList();
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(

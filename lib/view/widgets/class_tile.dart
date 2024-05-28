@@ -43,7 +43,7 @@ class ClassTile extends StatelessWidget {
               ),
             ),
             Text(
-              findFamilyName(familyId: class_.familyName),
+              findFamilyName(familyId: class_.familyId),
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.end,
               style: const TextStyle(

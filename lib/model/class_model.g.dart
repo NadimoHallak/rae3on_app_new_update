@@ -19,8 +19,8 @@ class ClassModelAdapter extends TypeAdapter<ClassModel> {
     return ClassModel()
       ..id = fields[0] as String
       ..classPrice = fields[1] as num
-      ..familyName = fields[2] as String
-      ..teacherName = fields[3] as String;
+      ..familyId = fields[2] as String
+      ..teacherId = fields[3] as String;
   }
 
   @override
@@ -32,9 +32,9 @@ class ClassModelAdapter extends TypeAdapter<ClassModel> {
       ..writeByte(1)
       ..write(obj.classPrice)
       ..writeByte(2)
-      ..write(obj.familyName)
+      ..write(obj.familyId)
       ..writeByte(3)
-      ..write(obj.teacherName);
+      ..write(obj.teacherId);
   }
 
   @override

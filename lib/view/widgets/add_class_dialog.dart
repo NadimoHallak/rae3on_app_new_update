@@ -44,7 +44,7 @@ class _AddClassDialogState extends State<AddClassDialog>
   void initState() {
     selectedFamily = widget.familesName[0].id;
     for (var family in widget.familesName) {
-      print("${family.name} ${family.id}");
+      // print("${family.name} ${family.id}");
     }
 
     super.initState();
@@ -130,8 +130,8 @@ class _AddClassDialogState extends State<AddClassDialog>
 
             if (globalKey.currentState!.validate()) {
               final ClassModel aClass = ClassModel()
-                ..familyName = selectedFamily
-                ..teacherName = widget.teacher.id
+                ..familyId = selectedFamily
+                ..teacherId = widget.teacher.id
                 ..classPrice = num.parse(controller.text);
 
               if (percentAsString != null || dinarPriceAsString != null) {
@@ -152,8 +152,18 @@ class _AddClassDialogState extends State<AddClassDialog>
                 teacher.acountInLiraWithDiscount = clacCoinWithDiscount(
                     coin: teacher.acountInLira, percent: percent);
                 widget.teacher.save();
-                final box = DataBase.getClass();
-                int classKey = await box.add(aClass);
+
+                FamilyModel family = DataBase.getFamiles()
+                    .values
+                    .cast()
+                    .toList()
+                    .singleWhere((element) => element.id == selectedFamily);
+                family.acountInDinar += num.parse(controller.text);
+                family.save();
+                print(family.acountInDinar);
+
+                final classBox = DataBase.getClass();
+                int classKey = await classBox.add(aClass);
                 aClass.id = classKey.toString();
                 aClass.save();
 

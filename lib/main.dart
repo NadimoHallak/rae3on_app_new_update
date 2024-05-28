@@ -21,7 +21,7 @@ main() async {
 
   config.get<SharedPreferences>().setString("percent", "10");
   config.get<SharedPreferences>().setString("dinarPrice", "40000");
-  
+
   runApp(const MyApp());
 }
 

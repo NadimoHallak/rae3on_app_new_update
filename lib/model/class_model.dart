@@ -12,7 +12,7 @@ class ClassModel extends HiveObject {
   @HiveField(1)
   late num classPrice;
   @HiveField(2)
-  late String familyName;
+  late String familyId;
   @HiveField(3)
-  late String teacherName;
+  late String teacherId;
 }

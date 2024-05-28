@@ -114,7 +114,69 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
                                   final familyBox = DataBase.getFamiles();
                                   if (familyBox
                                       .containsKey(int.parse(family.id))) {
-                                    clacDeleteFamily(context);
+                                    Navigator.pop(context);
+
+                                    final clasesBox = DataBase.getClass();
+                                    final teachers = DataBase.getTeachers()
+                                        .values
+                                        .cast<TeacherModel>()
+                                        .toList();
+
+                                    List<ClassModel> allClases = clasesBox
+                                        .values
+                                        .cast<ClassModel>()
+                                        .toList();
+
+                                    for (var i = allClases.length - 1;
+                                        i >= 0;
+                                        i--) {
+                                      if (allClases[i].familyId ==
+                                          widget.family.id) {
+                                        TeacherModel teacher =
+                                            teachers.firstWhere(
+                                          (element) =>
+                                              element.id ==
+                                              allClases[i].teacherId,
+                                        );
+
+                                        final percentAsString = config
+                                            .get<SharedPreferences>()
+                                            .getString("percent");
+                                        final dinarPriceAsString = config
+                                            .get<SharedPreferences>()
+                                            .getString("dinarPrice");
+
+                                        if (percentAsString != null ||
+                                            dinarPriceAsString != null) {
+                                          num percent = num.parse(config
+                                              .get<SharedPreferences>()
+                                              .getString("percent")!);
+                                          num dinarPrice = num.parse(config
+                                              .get<SharedPreferences>()
+                                              .getString("dinarPrice")!);
+
+                                          teacher.acountInDinar -=
+                                              allClases[i].classPrice;
+                                          teacher.acountInDinarWithDiscount =
+                                              clacCoinWithDiscount(
+                                            coin: teacher.acountInDinar,
+                                            percent: percent,
+                                          );
+                                          teacher.acountInLira =
+                                              clacAcountInLira(
+                                                  accountInDinar:
+                                                      teacher.acountInDinar,
+                                                  dinarPrice: dinarPrice);
+                                          teacher.acountInLiraWithDiscount =
+                                              clacCoinWithDiscount(
+                                                  coin: teacher.acountInLira,
+                                                  percent: percent);
+                                          teacher.save();
+                                          clasesBox.delete(
+                                              int.parse(allClases[i].id));
+                                        }
+                                      }
+                                    }
                                     familyBox.delete(int.parse(family.id));
                                   } else {
                                     Flushbar(
@@ -154,8 +216,7 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
                       DataBase.getClass().values.cast<ClassModel>().toList();
 
                   List<ClassModel> familesClases = allClases
-                      .where(
-                          (element) => element.familyName == widget.family.id)
+                      .where((element) => element.familyId == widget.family.id)
                       .toList();
 
                   List<TeacherModel> teachers =
@@ -165,9 +226,9 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
 
                   for (var i = 0; i < familesClases.length; i++) {
                     for (var j = 0; j < teachers.length; j++) {
-                      if (familesClases[i].teacherName == teachers[j].id) {
+                      if (familesClases[i].teacherId == teachers[j].id) {
                         familesTeachers.add(TeacherModel()
-                          ..id = teachers[i].id
+                          ..id = teachers[j].id
                           ..name = teachers[j].name
                           ..acountInDinar = familesClases[i].classPrice);
                       }
@@ -235,9 +296,9 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
         DataBase.getTeachers().values.cast<TeacherModel>().toList();
     List<ClassModel> allClases = clasesBox.values.cast<ClassModel>().toList();
     for (var i = allClases.length - 1; i >= 0; i--) {
-      if (allClases[i].familyName == widget.family.name) {
+      if (allClases[i].familyId == widget.family.name) {
         TeacherModel teacher = teachers.firstWhere(
-          (element) => element.name == allClases[i].teacherName,
+          (element) => element.name == allClases[i].teacherId,
         );
 
         final percentAsString =

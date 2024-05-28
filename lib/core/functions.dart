@@ -114,7 +114,7 @@ mixin CaculateFunctions {
       List<ClassModel> clases = DataBase.getClass()
           .values
           .cast<ClassModel>()
-          .where((element) => element.familyName == family.name)
+          .where((element) => element.familyId == family.name)
           .toList();
       num total = 0;
       for (var i = 0; i < clases.length; i++) {
