@@ -1,7 +1,8 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:rae3on_app_new_update/core/functions.dart';
 import 'package:rae3on_app_new_update/model/family_model.dart';
-import 'package:rae3on_app_new_update/model/teacher_model.dart';
 import 'package:rae3on_app_new_update/view/widgets/card_content.dart';
 
 class FamilyTile extends StatelessWidget with CaculateFunctions {

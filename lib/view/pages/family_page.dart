@@ -10,6 +10,7 @@ import 'package:rae3on_app_new_update/storage/database.dart';
 import 'package:rae3on_app_new_update/view/pages/family_page_details.dart';
 import 'package:rae3on_app_new_update/view/widgets/family_tile.dart';
 import 'package:rae3on_app_new_update/view/widgets/my_alert_dialog.dart';
+
 class FamilyPage extends StatefulWidget {
   const FamilyPage({super.key});
 
@@ -25,7 +26,8 @@ class _FamilyPageState extends State<FamilyPage> with CaculateFunctions {
   void initState() {
     super.initState();
     calcTotalDinarToFamilyTeachers(
-        familes: DataBase.getFamiles().values.cast<FamilyModel>().toList());
+      familes: DataBase.getFamiles().values.cast<FamilyModel>().toList(),
+    );
   }
 
   _addFamily(BuildContext context) {
@@ -112,30 +114,31 @@ class _FamilyPageState extends State<FamilyPage> with CaculateFunctions {
         child: ValueListenableBuilder<Box<FamilyModel>>(
           valueListenable: DataBase.getFamiles().listenable(),
           builder: (context, box, _) {
-            final famlies = box.values.cast<FamilyModel>().toList();
+            List<FamilyModel> famlies = box.values.cast<FamilyModel>().toList();
             // calcTotalDinarToFamilyTeachers(familes: famlies);
             return ListView.builder(
-                itemCount: famlies.length,
-                itemBuilder: (context, index) {
-                  return FadeInRight(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FamilyDetails(
-                              id: index,
-                              family: famlies[index],
-                            ),
+              itemCount: famlies.length,
+              itemBuilder: (context, index) {
+                return FadeInRight(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FamilyDetails(
+                            id: index,
+                            family: famlies[index],
                           ),
-                        );
-                      },
-                      child: FamilyTile(
-                        data: famlies[index],
-                      ),
+                        ),
+                      );
+                    },
+                    child: FamilyTile(
+                      data: famlies[index],
                     ),
-                  );
-                });
+                  ),
+                );
+              },
+            );
           },
         ),
       ),

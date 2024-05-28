@@ -114,7 +114,7 @@ mixin CaculateFunctions {
       List<ClassModel> clases = DataBase.getClass()
           .values
           .cast<ClassModel>()
-          .where((element) => element.familyId == family.name)
+          .where((element) => element.familyId == family.id)
           .toList();
       num total = 0;
       for (var i = 0; i < clases.length; i++) {
@@ -125,11 +125,11 @@ mixin CaculateFunctions {
     }
   }
 
-
-void CalcDeleteClassOnTeacher(
+  void CalcDeleteClassOnTeacher(
       {required List<ClassModel> teachersClases,
       required int index,
-      required BuildContext context, required TeacherModel teacher}) {
+      required BuildContext context,
+      required TeacherModel teacher}) {
     final percentAsString =
         config.get<SharedPreferences>().getString("percent");
 
@@ -137,8 +137,6 @@ void CalcDeleteClassOnTeacher(
         config.get<SharedPreferences>().getString("dinarPrice");
 
     if (percentAsString != null || dinarPriceAsString != null) {
-      
-
       num percent =
           num.parse(config.get<SharedPreferences>().getString("percent")!);
 
@@ -178,7 +176,3 @@ void CalcDeleteClassOnTeacher(
     }
   }
 }
-
-
-
-

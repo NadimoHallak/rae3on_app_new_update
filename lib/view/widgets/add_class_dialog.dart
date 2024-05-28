@@ -153,14 +153,14 @@ class _AddClassDialogState extends State<AddClassDialog>
                     coin: teacher.acountInLira, percent: percent);
                 widget.teacher.save();
 
-                FamilyModel family = DataBase.getFamiles()
-                    .values
-                    .cast()
-                    .toList()
-                    .singleWhere((element) => element.id == selectedFamily);
-                family.acountInDinar += num.parse(controller.text);
-                family.save();
-                print(family.acountInDinar);
+                // FamilyModel family = DataBase.getFamiles()
+                //     .values
+                //     .cast()
+                //     .toList()
+                //     .singleWhere((element) => element.id == selectedFamily);
+                // family.acountInDinar += num.parse(controller.text);
+                // family.save();
+                // print(family.acountInDinar);
 
                 final classBox = DataBase.getClass();
                 int classKey = await classBox.add(aClass);
