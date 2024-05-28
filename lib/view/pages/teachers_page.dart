@@ -33,7 +33,7 @@ class _TeacherPageState extends State<TeacherPage> {
             onCansle: () {
               Navigator.pop(context);
             },
-            onDone: () async{
+            onDone: () async {
               if (_key.currentState!.validate()) {
                 final teacher = TeacherModel()
                   // ..id = const Uuid().v4()
@@ -61,14 +61,13 @@ class _TeacherPageState extends State<TeacherPage> {
                     duration: const Duration(seconds: 2),
                   ).show(context);
                 } else {
-                  
-                    final box = DataBase.getTeachers();
-                    final int key = await box.add(teacher);
-                    teacher.id = key.toString();
-                    teacher.save();
-                    print(teacher.id);
-                    addTeacherController.clear();
-                 
+                  final box = DataBase.getTeachers();
+                  final int key = await box.add(teacher);
+                  teacher.id = key.toString();
+                  teacher.save();
+                  print(teacher.id);
+                  addTeacherController.clear();
+
                   Navigator.pop(context);
                 }
               }

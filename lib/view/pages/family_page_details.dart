@@ -27,7 +27,7 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
   Color? lableColor = Colors.white;
   Color? valueColor = Colors.white;
   // final familes = DataBase.getFamiles().values.toList().cast<FamilyModel>();
-  List<String> familesName = [];
+  // List<String> familesName = [];
   String selectedFamily = "";
 
   @override
@@ -58,8 +58,9 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
                         box.values.cast<FamilyModel>().firstWhere(
                               (element) => element.name == widget.family.name,
                               orElse: () => FamilyModel()
+                                ..id = widget.family.id
                                 ..name = widget.family.name
-                                ..acountInDinar = 0,
+                                ..acountInDinar = widget.family.acountInDinar,
                             );
                     return Container(
                       padding: const EdgeInsets.symmetric(
@@ -84,7 +85,7 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
                           Column(
                             children: [
                               CardContent(
-                                mainLable: "اسم المدرّس",
+                                mainLable: "اسم العائلة",
                                 vlaue: family.name,
                                 lableColor: lableColor,
                                 valueColor: valueColor,
@@ -110,65 +111,25 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pop(context);
                                   final familyBox = DataBase.getFamiles();
-                                  final clasesBox = DataBase.getClass();
-                                  final teachers = DataBase.getTeachers()
-                                      .values
-                                      .cast<TeacherModel>()
-                                      .toList();
-                                  List<ClassModel> allClases = clasesBox.values
-                                      .cast<ClassModel>()
-                                      .toList();
-                                  for (var i = allClases.length - 1;
-                                      i >= 0;
-                                      i--) {
-                                    if (allClases[i].familyName ==
-                                        widget.family.name) {
-                                      TeacherModel teacher =
-                                          teachers.firstWhere(
-                                        (element) =>
-                                            element.name ==
-                                            allClases[i].teacherName,
-                                      );
-
-                                      final percentAsString = config
-                                          .get<SharedPreferences>()
-                                          .getString("percent");
-                                      final dinarPriceAsString = config
-                                          .get<SharedPreferences>()
-                                          .getString("dinarPrice");
-
-                                      if (percentAsString != null ||
-                                          dinarPriceAsString != null) {
-                                        num percent = num.parse(config
-                                            .get<SharedPreferences>()
-                                            .getString("percent")!);
-                                        num dinarPrice = num.parse(config
-                                            .get<SharedPreferences>()
-                                            .getString("dinarPrice")!);
-
-                                        teacher.acountInDinar -=
-                                            allClases[i].classPrice;
-                                        teacher.acountInDinarWithDiscount =
-                                            clacCoinWithDiscount(
-                                          coin: teacher.acountInDinar,
-                                          percent: percent,
-                                        );
-                                        teacher.acountInLira = clacAcountInLira(
-                                            accountInDinar:
-                                                teacher.acountInDinar,
-                                            dinarPrice: dinarPrice);
-                                        teacher.acountInLiraWithDiscount =
-                                            clacCoinWithDiscount(
-                                                coin: teacher.acountInLira,
-                                                percent: percent);
-                                        teacher.save();
-                                        clasesBox.deleteAt(i);
-                                      }
-                                    }
+                                  if (familyBox
+                                      .containsKey(int.parse(family.id))) {
+                                    clacDeleteFamily(context);
+                                    familyBox.delete(int.parse(family.id));
+                                  } else {
+                                    Flushbar(
+                                      title: "خطأ",
+                                      titleColor: Colors.red,
+                                      message: "... يوجد خطأ ما",
+                                      flushbarPosition: FlushbarPosition.TOP,
+                                      icon: const Icon(
+                                        Icons.error,
+                                        color: Colors.red,
+                                      ),
+                                      // textDirection: TextDirection.rtl,
+                                      duration: const Duration(seconds: 2),
+                                    ).show(context);
                                   }
-                                  familyBox.deleteAt(widget.id);
                                 },
                                 child: const Text(
                                   "حذف العائلة",
@@ -193,8 +154,8 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
                       DataBase.getClass().values.cast<ClassModel>().toList();
 
                   List<ClassModel> familesClases = allClases
-                      .where((ClassModel element) =>
-                          element.familyName == widget.family.name)
+                      .where(
+                          (element) => element.familyName == widget.family.id)
                       .toList();
 
                   List<TeacherModel> teachers =
@@ -204,8 +165,9 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
 
                   for (var i = 0; i < familesClases.length; i++) {
                     for (var j = 0; j < teachers.length; j++) {
-                      if (familesClases[i].teacherName == teachers[j].name) {
+                      if (familesClases[i].teacherName == teachers[j].id) {
                         familesTeachers.add(TeacherModel()
+                          ..id = teachers[i].id
                           ..name = teachers[j].name
                           ..acountInDinar = familesClases[i].classPrice);
                       }
@@ -263,5 +225,45 @@ class _FamilyDetailsState extends State<FamilyDetails> with CaculateFunctions {
         ),
       ),
     );
+  }
+
+  clacDeleteFamily(BuildContext context) {
+    Navigator.pop(context);
+
+    final clasesBox = DataBase.getClass();
+    final teachers =
+        DataBase.getTeachers().values.cast<TeacherModel>().toList();
+    List<ClassModel> allClases = clasesBox.values.cast<ClassModel>().toList();
+    for (var i = allClases.length - 1; i >= 0; i--) {
+      if (allClases[i].familyName == widget.family.name) {
+        TeacherModel teacher = teachers.firstWhere(
+          (element) => element.name == allClases[i].teacherName,
+        );
+
+        final percentAsString =
+            config.get<SharedPreferences>().getString("percent");
+        final dinarPriceAsString =
+            config.get<SharedPreferences>().getString("dinarPrice");
+
+        if (percentAsString != null || dinarPriceAsString != null) {
+          num percent =
+              num.parse(config.get<SharedPreferences>().getString("percent")!);
+          num dinarPrice = num.parse(
+              config.get<SharedPreferences>().getString("dinarPrice")!);
+
+          teacher.acountInDinar -= allClases[i].classPrice;
+          teacher.acountInDinarWithDiscount = clacCoinWithDiscount(
+            coin: teacher.acountInDinar,
+            percent: percent,
+          );
+          teacher.acountInLira = clacAcountInLira(
+              accountInDinar: teacher.acountInDinar, dinarPrice: dinarPrice);
+          teacher.acountInLiraWithDiscount = clacCoinWithDiscount(
+              coin: teacher.acountInLira, percent: percent);
+          teacher.save();
+          clasesBox.delete(int.parse(allClases[i].id));
+        }
+      }
+    }
   }
 }

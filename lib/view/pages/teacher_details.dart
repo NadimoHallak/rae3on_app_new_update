@@ -169,12 +169,14 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                   for (var i = allClases.length - 1;
                                       i >= 0;
                                       i--) {
-                                    if (allClases[i].id == widget.teacher.id) {
-                                      clasesBox.delete(allClases[i].id);
+                                    if (allClases[i].teacherName ==
+                                        widget.teacher.id) {
+                                      clasesBox
+                                          .delete(int.parse(allClases[i].id));
                                     }
                                   }
-                                  // box.delete(teacher.id);
-                                  box.deleteAt(widget.id);
+                                  box.delete(int.parse(teacher.id));
+                                  // box.deleteAt(widget.id);
                                 },
                                 child: const Text(
                                   "حذف المدرس",
@@ -218,52 +220,22 @@ class _TeacherDetailsState extends State<TeacherDetails>
                               children: [
                                 SlidableAction(
                                   onPressed: (context) {
-                                    final percentAsString = config
-                                        .get<SharedPreferences>()
-                                        .getString("percent");
-
-                                    final dinarPriceAsString = config
-                                        .get<SharedPreferences>()
-                                        .getString("dinarPrice");
-
-                                    if (percentAsString != null ||
-                                        dinarPriceAsString != null) {
-                                      final teacher = widget.teacher;
-
-                                      num percent = num.parse(config
-                                          .get<SharedPreferences>()
-                                          .getString("percent")!);
-
-                                      num dinarPrice = num.parse(config
-                                          .get<SharedPreferences>()
-                                          .getString("dinarPrice")!);
-
-                                      teacher.acountInDinar -=
-                                          teachersClases[index].classPrice;
-
-                                      teacher.acountInDinarWithDiscount =
-                                          clacCoinWithDiscount(
-                                        coin: teacher.acountInDinar,
-                                        percent: percent,
+                                    int key_ =
+                                        int.parse(teachersClases[index].id);
+                                    if (box.containsKey(key_)) {
+                                      CalcDeleteClassOnTeacher(
+                                        teachersClases: teachersClases,
+                                        index: index,
+                                        context: context,
+                                        teacher: widget.teacher,
                                       );
 
-                                      teacher.acountInLira = clacAcountInLira(
-                                        accountInDinar: teacher.acountInDinar,
-                                        dinarPrice: dinarPrice,
-                                      );
-
-                                      teacher.acountInLiraWithDiscount =
-                                          clacCoinWithDiscount(
-                                        coin: teacher.acountInLira,
-                                        percent: percent,
-                                      );
-                                      widget.teacher.save();
+                                      box.delete(key_);
                                     } else {
                                       Flushbar(
                                         title: "خطأ",
                                         titleColor: Colors.red,
-                                        message:
-                                            "حقل النسبة أو سعر الدينار غير ممتلئ",
+                                        message: "... يوجد خطأ ما",
                                         flushbarPosition: FlushbarPosition.TOP,
                                         icon: const Icon(
                                           Icons.error,
@@ -273,7 +245,6 @@ class _TeacherDetailsState extends State<TeacherDetails>
                                         duration: const Duration(seconds: 2),
                                       ).show(context);
                                     }
-                                    box.delete(teachersClases[index].id);
                                   },
                                   icon: Icons.delete,
                                   backgroundColor: Colors.red,

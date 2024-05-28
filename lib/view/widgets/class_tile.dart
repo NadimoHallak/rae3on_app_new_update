@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rae3on_app_new_update/model/class_model.dart';
+import 'package:rae3on_app_new_update/model/family_model.dart';
+import 'package:rae3on_app_new_update/storage/database.dart';
 
 class ClassTile extends StatelessWidget {
   ClassTile({
@@ -13,6 +15,16 @@ class ClassTile extends StatelessWidget {
   // final int index;
 
   final ClassModel class_;
+
+  String findFamilyName({required String familyId}) {
+    FamilyModel family = DataBase.getFamiles()
+        .values
+        .cast<FamilyModel>()
+        .toList()
+        .firstWhere((element) => element.id == familyId);
+    return family.name;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,7 +43,7 @@ class ClassTile extends StatelessWidget {
               ),
             ),
             Text(
-              " ${class_.familyName}",
+              findFamilyName(familyId: class_.familyName),
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.end,
               style: const TextStyle(

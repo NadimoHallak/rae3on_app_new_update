@@ -1,18 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:animate_do/animate_do.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rae3on_app_new_update/core/functions.dart';
 import 'package:rae3on_app_new_update/model/family_model.dart';
-import 'package:rae3on_app_new_update/model/teacher_model.dart';
 import 'package:rae3on_app_new_update/storage/database.dart';
 import 'package:rae3on_app_new_update/view/pages/family_page_details.dart';
 import 'package:rae3on_app_new_update/view/widgets/family_tile.dart';
 import 'package:rae3on_app_new_update/view/widgets/my_alert_dialog.dart';
-import 'package:rae3on_app_new_update/view/widgets/teacher_tile.dart';
-import 'package:uuid/uuid.dart';
-
 class FamilyPage extends StatefulWidget {
   const FamilyPage({super.key});
 
@@ -47,7 +44,6 @@ class _FamilyPageState extends State<FamilyPage> with CaculateFunctions {
             onDone: () async {
               if (_key.currentState!.validate()) {
                 final family = FamilyModel()
-                  // ..id = const Uuid().v4()
                   ..name = addFamilyController.text
                   ..acountInDinar = 0;
                 final isExist =
@@ -74,8 +70,6 @@ class _FamilyPageState extends State<FamilyPage> with CaculateFunctions {
                   family.id = key.toString();
                   family.save();
                   addFamilyController.clear();
-                  print(family.id);
-                  // teachers.add(TeacherModel(name: addTeacherController.text));
                   Navigator.pop(context);
                 }
               }

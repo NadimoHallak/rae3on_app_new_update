@@ -125,55 +125,54 @@ class _AddClassDialogState extends State<AddClassDialog>
           ),
         ),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             // print(controller.text);
 
-            setState(() {
-              if (globalKey.currentState!.validate()) {
-                final ClassModel aClass = ClassModel()
-                  ..id = const Uuid().v4()
-                  ..familyName = selectedFamily
-                  ..teacherName = widget.teacher.id
-                  ..classPrice = num.parse(controller.text);
+            if (globalKey.currentState!.validate()) {
+              final ClassModel aClass = ClassModel()
+                ..familyName = selectedFamily
+                ..teacherName = widget.teacher.id
+                ..classPrice = num.parse(controller.text);
 
-                if (percentAsString != null || dinarPriceAsString != null) {
-                  final teacher = widget.teacher;
-                  num percent = num.parse(
-                      config.get<SharedPreferences>().getString("percent")!);
-                  num dinarPrice = num.parse(
-                      config.get<SharedPreferences>().getString("dinarPrice")!);
+              if (percentAsString != null || dinarPriceAsString != null) {
+                final teacher = widget.teacher;
+                num percent = num.parse(
+                    config.get<SharedPreferences>().getString("percent")!);
+                num dinarPrice = num.parse(
+                    config.get<SharedPreferences>().getString("dinarPrice")!);
 
-                  teacher.acountInDinar += num.parse(controller.text);
-                  teacher.acountInDinarWithDiscount = clacCoinWithDiscount(
-                    coin: teacher.acountInDinar,
-                    percent: percent,
-                  );
-                  teacher.acountInLira = clacAcountInLira(
-                      accountInDinar: teacher.acountInDinar,
-                      dinarPrice: dinarPrice);
-                  teacher.acountInLiraWithDiscount = clacCoinWithDiscount(
-                      coin: teacher.acountInLira, percent: percent);
-                  widget.teacher.save();
-                  final box = DataBase.getClass();
-                  box.add(aClass);
-                  
-                  Navigator.pop(context);
-                } else {
-                  Flushbar(
-                    title: "خطأ",
-                    titleColor: Colors.red,
-                    message: "حقل النسبة أو سعر الدينار غير ممتلئ",
-                    flushbarPosition: FlushbarPosition.TOP,
-                    icon: const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                    ),
-                    textDirection: TextDirection.rtl,
-                    duration: const Duration(seconds: 2),
-                  ).show(context);
-                }
+                teacher.acountInDinar += num.parse(controller.text);
+                teacher.acountInDinarWithDiscount = clacCoinWithDiscount(
+                  coin: teacher.acountInDinar,
+                  percent: percent,
+                );
+                teacher.acountInLira = clacAcountInLira(
+                    accountInDinar: teacher.acountInDinar,
+                    dinarPrice: dinarPrice);
+                teacher.acountInLiraWithDiscount = clacCoinWithDiscount(
+                    coin: teacher.acountInLira, percent: percent);
+                widget.teacher.save();
+                final box = DataBase.getClass();
+                int classKey = await box.add(aClass);
+                aClass.id = classKey.toString();
+                aClass.save();
+
+                Navigator.pop(context);
+              } else {
+                Flushbar(
+                  title: "خطأ",
+                  titleColor: Colors.red,
+                  message: "حقل النسبة أو سعر الدينار غير ممتلئ",
+                  flushbarPosition: FlushbarPosition.TOP,
+                  icon: const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                  textDirection: TextDirection.rtl,
+                  duration: const Duration(seconds: 2),
+                ).show(context);
               }
-            });
+            }
           },
           child: const Text(
             "أضف",
