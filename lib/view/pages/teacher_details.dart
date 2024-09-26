@@ -1,8 +1,17 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rae3on_app_new_update/core/di.dart';
+import 'package:rae3on_app_new_update/core/functions.dart';
+import 'package:rae3on_app_new_update/model/class_model.dart';
+import 'package:rae3on_app_new_update/model/family_model.dart';
 import 'package:rae3on_app_new_update/model/teacher_model.dart';
 import 'package:rae3on_app_new_update/storage/database.dart';
+import 'package:rae3on_app_new_update/view/widgets/add_class_dialog.dart';
 import 'package:rae3on_app_new_update/view/widgets/card_content.dart';
-import 'package:rae3on_app_new_update/view/widgets/teacher_tile.dart';
+import 'package:rae3on_app_new_update/view/widgets/class_tile.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TeacherDetails extends StatefulWidget {
   const TeacherDetails({super.key, required this.id, required this.teacher});
@@ -13,11 +22,25 @@ class TeacherDetails extends StatefulWidget {
   State<TeacherDetails> createState() => _TeacherDetailsState();
 }
 
-class _TeacherDetailsState extends State<TeacherDetails> {
+class _TeacherDetailsState extends State<TeacherDetails>
+    with CaculateFunctions {
+  //! ============================================================================
+  //! ================================== Varibles ================================
+  //! ============================================================================
+
   Color? lableColor = Colors.white;
   Color? valueColor = Colors.white;
+  final familes = DataBase.getFamiles().values.toList().cast<FamilyModel>();
+  List<String> familesName = [];
+  String selectedFamily = "";
+
   @override
   Widget build(BuildContext context) {
+    familesName = List.generate(
+      familes.length,
+      (index) => familes[index].name,
+    );
+    // print(familesName);
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -28,128 +51,262 @@ class _TeacherDetailsState extends State<TeacherDetails> {
                 Icons.person,
                 color: Colors.white,
               ),
-              // backgroundColor: Colors.deepPurple,
-              // surfaceTintColor: Colors.deepPurple,
               stretch: true,
               stretchTriggerOffset: 300.0,
               expandedHeight: 300.0,
               flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  decoration: const BoxDecoration(
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(15)),
-                    gradient: LinearGradient(
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                      colors: <Color>[
-                        Color.fromARGB(255, 59, 26, 116),
-                        Color(0xFF935FEC),
-                      ],
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    textDirection: TextDirection.rtl,
-                    children: [
-                      CardContent(
-                        mainLable: "اسم المدرّس",
-                        vlaue: widget.teacher.name,
-                        lableColor: lableColor,
-                        valueColor: valueColor,
+                background: ValueListenableBuilder(
+                  valueListenable: DataBase.getTeachers().listenable(),
+                  builder: (BuildContext context, box, _) {
+                    TeacherModel teacher =
+                        box.values.cast<TeacherModel>().firstWhere(
+                              (element) => element.name == widget.teacher.name,
+                              orElse: () => TeacherModel()
+                                ..name = widget.teacher.name
+                                ..acountInDinar = 0
+                                ..acountInDinarWithDiscount = 0
+                                ..acountInLira = 0
+                                ..acountInLiraWithDiscount = 0,
+                            );
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      decoration: const BoxDecoration(
+                        borderRadius:
+                            BorderRadius.vertical(bottom: Radius.circular(15)),
+                        gradient: LinearGradient(
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft,
+                          colors: <Color>[
+                            Color.fromARGB(255, 59, 26, 116),
+                            Color(0xFF935FEC),
+                          ],
+                        ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      CardContent(
-                        mainLable: "الحساب بالدينار",
-                        vlaue: "20",
-                        lableColor: lableColor,
-                        valueColor: valueColor,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      CardContent(
-                        mainLable: "الحساب بالليرة مع حسم",
-                        vlaue: "1000000",
-                        lableColor: lableColor,
-                        valueColor: valueColor,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      CardContent(
-                        mainLable: "الحساب بالليرة بدون حسم",
-                        vlaue: "1000000",
-                        lableColor: lableColor,
-                        valueColor: valueColor,
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Row(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        textDirection: TextDirection.rtl,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        // textDirection: TextDirection.rtl,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              showAdaptiveDialog(
-                                context: context,
-                                builder: (context) => AlertDialog.adaptive(
-                                  title: Text("أضف حصة"),
-                                  content: Column(
-                                    children: [
-                                      TextFormField(
-                                        textAlignVertical:
-                                            TextAlignVertical.center,
-                                        textDirection: TextDirection.ltr,
-                                        textAlign: TextAlign.end,
-                                        decoration: InputDecoration(
-                                          hintText: "اسم المادة",
-                                        ),
-                                      ),
-                                      TextFormField(
-                                        textAlignVertical:
-                                            TextAlignVertical.center,
-                                        textDirection: TextDirection.ltr,
-                                        textAlign: TextAlign.end,
-                                        decoration: InputDecoration(
-                                          hintText: "سعر الحصة",
-                                        ),
-                                      ),
-                                      TextFormField(
-                                        textAlignVertical:
-                                            TextAlignVertical.center,
-                                        textDirection: TextDirection.ltr,
-                                        textAlign: TextAlign.end,
-                                        decoration: InputDecoration(
-                                          hintText: "عدد الحصص",
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                            child: const Text("إضافة حصة"),
+                          CardContent(
+                            mainLable: "اسم المدرّس",
+                            vlaue: teacher.name,
+                            lableColor: lableColor,
+                            valueColor: valueColor,
                           ),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text(
-                              "حذف المدرس",
-                              style: TextStyle(color: Colors.red),
-                            ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          CardContent(
+                            mainLable: "الحساب بالدينار",
+                            vlaue:
+                                "${formatNumber(number: teacher.acountInDinar)}",
+                            lableColor: lableColor,
+                            valueColor: valueColor,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          CardContent(
+                            mainLable: "الحساب بالدينار مع حسم",
+                            vlaue:
+                                "${formatNumber(number: teacher.acountInDinarWithDiscount)}",
+                            lableColor: lableColor,
+                            valueColor: valueColor,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          CardContent(
+                            mainLable: "الحساب بالليرة مع حسم",
+                            vlaue:
+                                "${formatNumber(number: teacher.acountInLiraWithDiscount)}",
+                            lableColor: lableColor,
+                            valueColor: valueColor,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          CardContent(
+                            mainLable: "الحساب بالليرة بدون حسم",
+                            vlaue:
+                                "${formatNumber(number: teacher.acountInLira)}",
+                            lableColor: lableColor,
+                            valueColor: valueColor,
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            // textDirection: TextDirection.rtl,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      //! note
+
+                                      selectedFamily = familesName.isNotEmpty
+                                          ? familesName.first
+                                          : "لا يوجد عائلات";
+
+                                      return AddClassDialog(
+                                        teacher: widget.teacher,
+                                        familesName: familesName,
+                                        selectedFamily: selectedFamily,
+                                      );
+                                    },
+                                  );
+
+                                  setState(() {});
+                                },
+                                child: const Text(
+                                  "إضافة حصة",
+                                  // textDirection: TextDirection.rtl,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  final teacherBox = DataBase.getTeachers();
+                                  final clasesBox = DataBase.getClass();
+                                  List<ClassModel> allClases = clasesBox.values
+                                      .toList()
+                                      .cast<ClassModel>();
+                                  for (var i = allClases.length - 1;
+                                      i >= 0;
+                                      i--) {
+                                    if (allClases[i].teacherName ==
+                                        widget.teacher.name) {
+                                      clasesBox.deleteAt(i);
+                                    }
+                                  }
+
+                                  teacherBox.deleteAt(widget.id);
+                                },
+                                child: const Text(
+                                  "حذف المدرس",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ),
             ),
-            SliverList(delegate: SliverChildListDelegate([])),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              sliver: ValueListenableBuilder(
+                valueListenable: DataBase.getClass().listenable(),
+                builder: (context, box, _) {
+                  List<ClassModel> allClases =
+                      box.values.toList().cast<ClassModel>();
+                  dynamic teachersClases = allClases
+                      .where((element) =>
+                          element.teacherName == widget.teacher.name)
+                      .toList();
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 15,
+                            top: 5,
+                            left: 10,
+                            right: 10,
+                          ),
+                          child: Slidable(
+                            startActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    final percentAsString = config
+                                        .get<SharedPreferences>()
+                                        .getString("percent");
+                                    final dinarPriceAsString = config
+                                        .get<SharedPreferences>()
+                                        .getString("dinarPrice");
+                                    if (percentAsString != null ||
+                                        dinarPriceAsString != null) {
+                                      final teacher = widget.teacher;
+                                      num percent = num.parse(config
+                                          .get<SharedPreferences>()
+                                          .getString("percent")!);
+                                      num dinarPrice = num.parse(config
+                                          .get<SharedPreferences>()
+                                          .getString("dinarPrice")!);
+
+                                      teacher.acountInDinar -=
+                                          teachersClases[index].classPrice;
+                                      teacher.acountInDinarWithDiscount =
+                                          clacCoinWithDiscount(
+                                        coin: teacher.acountInDinar,
+                                        percent: percent,
+                                      );
+                                      teacher.acountInLira = clacAcountInLira(
+                                          accountInDinar: teacher.acountInDinar,
+                                          dinarPrice: dinarPrice);
+                                      teacher.acountInLiraWithDiscount =
+                                          clacCoinWithDiscount(
+                                              coin: teacher.acountInLira,
+                                              percent: percent);
+                                      widget.teacher.save();
+                                    } else {
+                                      Flushbar(
+                                        title: "خطأ",
+                                        titleColor: Colors.red,
+                                        message:
+                                            "حقل النسبة أو سعر الدينار غير ممتلئ",
+                                        flushbarPosition: FlushbarPosition.TOP,
+                                        icon: const Icon(
+                                          Icons.error,
+                                          color: Colors.red,
+                                        ),
+                                        // textDirection: TextDirection.rtl,
+                                        duration: const Duration(seconds: 2),
+                                      ).show(context);
+                                    }
+                                    box.deleteAt(index);
+                                  },
+                                  icon: Icons.delete,
+                                  backgroundColor: Colors.red,
+                                  borderRadius: BorderRadius.circular(8),
+                                )
+                              ],
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        spreadRadius: 0,
+                                        blurRadius: 8,
+                                        color: Colors.black26)
+                                  ]),
+                              child: ClassTile(
+                                clases: teachersClases,
+                                index: index,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      childCount: teachersClases.length,
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         ),
       ),

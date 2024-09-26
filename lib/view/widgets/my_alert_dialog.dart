@@ -1,7 +1,4 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:rae3on_app_new_update/model/teacher_model.dart';
-import 'package:rae3on_app_new_update/view/pages/teachers_page.dart';
 
 class MyAlertDialog extends StatefulWidget {
   MyAlertDialog({
@@ -9,14 +6,16 @@ class MyAlertDialog extends StatefulWidget {
     required this.controller,
     required this.onCansle,
     required this.onDone,
-    required this.title, required this.hint,
+    required this.title,
+    required this.hint,
+    
   });
   void Function() onCansle;
   void Function() onDone;
   final String title;
   final String hint;
-
   final TextEditingController controller;
+  
 
   @override
   State<MyAlertDialog> createState() => _MyAlertDialogState();
@@ -33,11 +32,17 @@ class _MyAlertDialogState extends State<MyAlertDialog> {
         textAlign: TextAlign.start,
       ),
       content: TextFormField(
+        
+        validator: (String? value) {
+          if (value!.trim().isEmpty) {
+            return "إملأ الحقل";
+          }
+        },
         controller: widget.controller,
         textAlignVertical: TextAlignVertical.center,
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.end,
-        decoration:  InputDecoration(hintText: widget.hint),
+        decoration: InputDecoration(hintText: widget.hint),
       ),
       actions: [
         TextButton(

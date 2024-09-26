@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:rae3on_app_new_update/view/widgets/card_content.dart';
 
 class InformationCard extends StatelessWidget {
-  const InformationCard({
+  InformationCard({
     super.key,
     required this.widthPage,
+    required this.lable1,
+    required this.lable2,
+    required this.value1,
+    required this.value2,
   });
 
   final double widthPage;
+  Color textColor = Colors.white;
+  final String lable1;
+  final String lable2;
+  final String value1;
+  final String value2;
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +43,24 @@ class InformationCard extends StatelessWidget {
         color: const Color.fromARGB(255, 147, 95, 236),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         textDirection: TextDirection.rtl,
         children: [
-          Text(
-            "0  : مجموع الأساتذة الموجودين",
-            style: TextStyle(color: Colors.white, fontSize: 18),
+          CardContent(
+            vlaue: value1,
+            mainLable: lable1,
+            lableColor: textColor,
+            valueColor: textColor,
           ),
-          SizedBox(
-            height: 7,
+          const SizedBox(
+            height: 10,
           ),
-          Text(
-            "0  : مجموع العوائل الموجودين",
-            style: TextStyle(color: Colors.white, fontSize: 18),
+          CardContent(
+            vlaue: value2,
+            mainLable: lable2,
+            lableColor: textColor,
+            valueColor: textColor,
           ),
         ],
       ),

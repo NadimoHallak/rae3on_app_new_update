@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:rae3on_app_new_update/core/functions.dart';
 import 'package:rae3on_app_new_update/model/teacher_model.dart';
 import 'package:rae3on_app_new_update/view/widgets/card_content.dart';
 
-class TeacherTile extends StatelessWidget {
+class TeacherTile extends StatelessWidget with CaculateFunctions {
   const TeacherTile({
     super.key,
     required this.data,
@@ -46,7 +47,7 @@ class TeacherTile extends StatelessWidget {
           ),
           CardContent(
             mainLable: "الحساب بالدينار",
-            vlaue: "20",
+            vlaue: "${formatNumber(number: data.acountInDinar)}",
             lableColor: Colors.white,
             valueColor: Colors.white,
           ),
@@ -54,8 +55,8 @@ class TeacherTile extends StatelessWidget {
             height: 10,
           ),
           CardContent(
-            mainLable: "الحساب بالليرة",
-            vlaue: "1000000",
+            mainLable: "الحساب بالليرة مع حسم",
+            vlaue: "${formatNumber(number: data.acountInLiraWithDiscount)}",
             lableColor: Colors.white,
             valueColor: Colors.white,
           ),

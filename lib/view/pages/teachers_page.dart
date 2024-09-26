@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rae3on_app_new_update/model/teacher_model.dart';
 import 'package:rae3on_app_new_update/storage/database.dart';
@@ -17,26 +17,58 @@ class TeacherPage extends StatefulWidget {
 
 class _TeacherPageState extends State<TeacherPage> {
   TextEditingController addTeacherController = TextEditingController();
+  GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   _addTeacher(BuildContext context) {
     setState(() {
       showAdaptiveDialog(
         context: context,
-        builder: (context) => MyAlertDialog(
-          hint: "اسم المدرّس",
-          title: "أضف مدرساً",
-          controller: addTeacherController,
-          onCansle: () {},
-          onDone: () {
-            final teacher = TeacherModel()..name = addTeacherController.text;
-            setState(() {
-              final box = DataBase.getTeachers();
-              box.add(teacher);
+        builder: (context) => Form(
+          key: _key,
+          child: MyAlertDialog(
+            hint: "اسم المدرّس",
+            title: "أضف مدرساً",
+            controller: addTeacherController,
+            onCansle: () {
+              Navigator.pop(context);
+            },
+            onDone: () {
+              if (_key.currentState!.validate()) {
+                final teacher = TeacherModel()
+                  ..name = addTeacherController.text
+                  ..acountInDinar = 0
+                  ..acountInDinarWithDiscount = 0
+                  ..acountInLira = 0
+                  ..acountInLiraWithDiscount = 0;
+                final isExist =
+                    DataBase.getTeachers().values.cast<TeacherModel>().any(
+                          (element) => element.name == teacher.name,
+                        );
 
-              // teachers.add(TeacherModel(name: addTeacherController.text));
-            });
-            Navigator.pop(context);
-          },
+                if (isExist) {
+                  Flushbar(
+                    title: "خطأ",
+                    titleColor: Colors.red,
+                    message: "المدرس موجود مسبقا",
+                    flushbarPosition: FlushbarPosition.TOP,
+                    icon: const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
+                    textDirection: TextDirection.rtl,
+                    duration: const Duration(seconds: 2),
+                  ).show(context);
+                } else {
+                  setState(() {
+                    final box = DataBase.getTeachers();
+                    box.add(teacher);
+                    addTeacherController.clear();
+                  });
+                  Navigator.pop(context);
+                }
+              }
+            },
+          ),
         ),
       );
     });
@@ -71,44 +103,50 @@ class _TeacherPageState extends State<TeacherPage> {
         actionsIconTheme: const IconThemeData(size: 35),
       ),
       body: SafeArea(
-          child: ValueListenableBuilder<Box<TeacherModel>>(
-        valueListenable: DataBase.getTeachers().listenable(),
-        builder: (context, box, _) {
-          final teachers = box.values.toList().cast<TeacherModel>();
+        child: ValueListenableBuilder<Box<TeacherModel>>(
+          valueListenable: DataBase.getTeachers().listenable(),
+          builder: (context, box, _) {
+            final teachers = box.values.toList().cast<TeacherModel>();
 
-          return ListView.builder(
-            itemCount: teachers.length,
-            itemBuilder: (context, index) => FadeInLeft(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TeacherDetails(
-                              id: index,
-                              teacher: teachers[index],
-                            )),
-                  );
-                },
-                child: TeacherTile(
-                  data: teachers[index],
+            return ListView.builder(
+              itemCount: teachers.length,
+              itemBuilder: (context, index) => FadeInLeft(
+                child: InkWell(
+                  onTap: () {
+                    if (DataBase.getFamiles().isEmpty) {
+                      Flushbar(
+                        title: "خطأ",
+                        titleColor: Colors.red,
+                        message: "أضف بعض العائلات",
+                        flushbarPosition: FlushbarPosition.TOP,
+                        icon: const Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        ),
+                        textDirection: TextDirection.rtl,
+                        duration: const Duration(seconds: 2),
+                      ).show(context);
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TeacherDetails(
+                            id: index,
+                            teacher: teachers[index],
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: TeacherTile(
+                    data: teachers[index],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
-      )
-
-          //  ListView.builder(
-          //   itemCount: teachers.length,
-          //   itemBuilder: (context, index) => Container(),
-          //   // FadeInLeft(
-          //   //   child: TeacherTile(
-          //   //       data: TeacherModel(name: teachers[index].name),
-          //   //       ),
-          //   // ),
-          // ),
-          ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

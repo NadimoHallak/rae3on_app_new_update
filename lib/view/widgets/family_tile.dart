@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:rae3on_app_new_update/core/functions.dart';
 import 'package:rae3on_app_new_update/model/family_model.dart';
 import 'package:rae3on_app_new_update/model/teacher_model.dart';
 import 'package:rae3on_app_new_update/view/widgets/card_content.dart';
 
-class FamilyTile extends StatelessWidget {
-  const FamilyTile({
+class FamilyTile extends StatelessWidget with CaculateFunctions {
+  FamilyTile({
     super.key,
     required this.data,
   });
 
   final FamilyModel data;
+  Color textColor = Colors.white;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,15 +38,22 @@ class FamilyTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         textDirection: TextDirection.rtl,
         children: [
-          CardContent(mainLable: "اسم العائلة", vlaue: data.name),
+          CardContent(
+            mainLable: "اسم العائلة",
+            vlaue: data.name,
+            lableColor: textColor,
+            valueColor: textColor,
+          ),
           const SizedBox(
             height: 10,
           ),
-           CardContent(mainLable: "الحساب بالدينار", vlaue: "20"),
-          const SizedBox(
-            height: 10,
+          CardContent(
+            mainLable: "الحساب بالدينار",
+            vlaue: "${formatNumber(number: data.acountInDinar)}",
+            lableColor: textColor,
+            valueColor: textColor,
           ),
-           CardContent(mainLable: "الحساب بالليرة", vlaue: "1000000"),
+        
         ],
       ),
     );
